@@ -30,22 +30,27 @@ bool keyCheck(vector<vector<string>> &relation, set<vector<string>> &rowList, st
 
 int solution(vector<vector<string>> relation) {
     int answer = 0;
+    int columnLen = relation[0].size();
     map<string,bool> candiList;
     vector<pair<int,string>> keyLen;
     set<vector<string>> rowList;
     
-    for(int i=1;i<5;++i){
+    string column;
+    for(int i=0;i<columnLen;++i){
+        column += to_string(i);    
+    }
+
+    for(int i=1;i<columnLen+1;++i){
         string key;
-        string column = "0123";
         vector<int> tmp;
-        for(int j=0;j<4-i;++j){
+        for(int j=0;j<columnLen-i;++j){
             tmp.push_back(0);
         }
         for(int j=0;j<i;++j){
             tmp.push_back(1);
         }
         do{
-            for(int j=0;j<4;++j){
+            for(int j=0;j<columnLen;++j){
                 if(tmp[j] == 1){
                     key += column.substr(j,1);
                 }
@@ -59,36 +64,45 @@ int solution(vector<vector<string>> relation) {
     for(auto i=candiList.begin();i!=candiList.end();++i){
         i->second = keyCheck(relation,rowList,i->first);
         if(i->second){
-            keyLen.push_back(make_pair(i->first.length(),i->first));   
+            keyLen.push_back(make_pair(i->first.length(),i->first)); 
         }
     }
     sort(keyLen.begin(),keyLen.end());
     
     int index;
-    int targetLen;
     int colCheck;
-    int keyLenSize = keyLen.length();
-    // for(int i=0;i<keyLenSize;++i){
-    //     targetLen = keyLen[i].second.length();
-    //     while(tmp != candiList.end()){
-    //         if(tmp == i){
-    //             ++tmp;
-    //             continue;
-    //         }
-    //         colCheck = 0;
-    //         for(int a=0;a<index;++a){
-    //             if(tmp->first.find(i->first[a]) != -1){
-    //                 ++colCheck;
-    //             }
-    //         }
-    //         if(colCheck == index){
-    //             candiList.erase(tmp++);
-    //         }else{
-    //             ++tmp;
-    //         }
-    //     }
-    // }
+    for(auto i=keyLen.begin();i!=keyLen.end();++i){
+        auto tmp = i;
+        index = i->second.length();
+        while(tmp != keyLen.end()){
+            if(tmp == i){
+                ++tmp;
+                continue;
+            }
+            if(tmp->first == index){
+                ++tmp;
+                continue;
+            }
+            colCheck = 0;
+            for(int a=0;a<index;++a){
+                if(tmp->second.find(i->second[a]) != -1){
+                    ++colCheck;
+                }
+            }
+            if(colCheck == index){
+                if(candiList.find(tmp->second)!=candiList.end()){
+                    candiList.erase(candiList.find(tmp->second));
+                }
+            }
+            ++tmp;
+        }
+    }
     
-    answer = keyLen.size();
+    for(auto i=candiList.begin();i!=candiList.end();++i){
+        if(i->second){
+            ++answer;
+        }
+    }
+    
     return answer;
 }
