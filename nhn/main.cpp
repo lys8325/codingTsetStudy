@@ -15,23 +15,23 @@ int bfs(int y, int x){
 	int cnt = 1;
 	int tmpY, tmpX, nextY, nextX;
 	mat[y][x] = false;
-	q.push({y, x};
-	
+	q.push(make_pair(y, x));
+
 	while(!q.empty()){
-		tmpY = q.top().first;
-		tmpX = q.top().second;
+		tmpY = q.front().first;
+		tmpX = q.front().second;
 		q.pop();
-		
+
 		for(int i=0;i<4;++i){
 			nextY = tmpY + dy[i];
 			nextX = tmpX + dx[i];
-			
-			if(nextY < 0 || nextY > n || nextX < 0 || nextX < n){
+
+			if(nextY < 0 || nextY >= n || nextX < 0 || nextX >= n){
 				continue;
 			}
-			
-			if(!mat[nextY][nextX]){
-				q.push({nextY, nextX});
+
+			if(mat[nextY][nextX]){
+				q.push(make_pair(nextY, nextX));
 				mat[nextY][nextX] = false;
 				++cnt;
 			}
@@ -59,9 +59,9 @@ int main(){
 			}
 		}
 	}
-	
+
 	sort(ans.begin(), ans.end());
-	
+
 	cout<<len<<"\n";
 	for(int i=0;i<len;++i){
 		if(i < len-1){
